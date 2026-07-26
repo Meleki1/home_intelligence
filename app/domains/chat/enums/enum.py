@@ -1,0 +1,51 @@
+from enum import Enum
+
+class NextBestStep(Enum):
+
+    NONE="NONE"
+
+    ASK_MORE_QUESTIONS=(
+        "ASK_MORE_QUESTIONS"
+    )
+
+    CONTINUE_CONVERSATION=(
+        "CONTINUE_CONVERSATION"
+    )
+
+    UPLOAD_IMAGE=(
+        "UPLOAD_IMAGE"
+    )
+
+    MONITOR_ISSUE=(
+        "MONITOR_ISSUE"
+    )
+
+    PROFESSIONAL_ASSISTANCE=(
+        "PROFESSIONAL_ASSISTANCE"
+    )
+
+    ISSUE_RESOLVED=(
+        "ISSUE_RESOLVED"
+    )
+
+
+class Intent(Enum):
+
+    GREETING="GREETING"
+
+    APPRECIATION="APPRECIATION"
+
+    GENERAL_HELP="GENERAL_HELP"
+
+    HOME_ISSUE="HOME_ISSUE"
+
+    PRICE_REQUEST="PRICE_REQUEST"
+
+    QUESTION="QUESTION"
+
+    CONTINUE_CONVERSATION=(
+        "CONTINUE_CONVERSATION"
+    )
+
+    UNKNOWN="UNKNOWN"
+
