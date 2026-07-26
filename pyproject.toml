@@ -1,5 +1,5 @@
 [project]
-name = "home-ai-os"
+name = "home-ai"
 version = "0.1.0"
 description = "Agentic AI Operating System for Intelligent Homes"
 readme = "README.md"
