@@ -3,7 +3,7 @@ from app.interfaces.api.health import router as health_router
 from app.interfaces.api.chat import router as chat_router
 from app.interfaces.api.vision import router as vision_router
 from app.interfaces.api.telegram.webhook import router as telegram_router
-from  app.application import create_app
+
 
 
 
@@ -16,8 +16,12 @@ api_router.include_router(
 )
 
 api_router.include_router(
-    chat_router
+    chat_router,
+    prefix="/chat",
+    tags=["Chat"],
+
 )
+
 
 api_router.include_router(
     vision_router,
