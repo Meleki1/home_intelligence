@@ -41,17 +41,14 @@ async def telegram_webhook(request: Request):
             mime_type=mime,
         )
 
-        response = await chat_service.chat(
-            request=telegram.request,
-            image=image_input,
-        )
+    response = await chat_service.chat(
+        request=telegram.request,
+        image=image_input,
+    )
 
     await sender.send_message(
-
         telegram.chat_id,
-
         response.message,
-
     )
 
     return {"ok": True}
