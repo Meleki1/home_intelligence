@@ -11,11 +11,7 @@ class VisionService:
     def __init__(self):
         self.openai = OpenAIService()
 
-    async def analyze(
-        self,
-        image: bytes,
-        mime_type: str,
-    ) -> VisionAnalysisResponse:
+    async def analyze(self, image: bytes, mime_type: str) -> VisionAnalysisResponse:
 
         response = await self.openai.generate_vision(
             prompt=VISION_PROMPT,
@@ -23,9 +19,7 @@ class VisionService:
             mime_type=mime_type
         )
 
-        print("=" * 80)
-        print(response)
-        print("=" * 80)
+        
         
         
         data = json.loads(response)

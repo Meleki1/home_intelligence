@@ -43,12 +43,10 @@ class ChatService:
 
         if image is not None:
 
-            image_bytes = await image.read()
-
             image_analysis = (
                 await self.vision_service.analyze(
-                    image=image_bytes,
-                    mime_type=image.content_type,
+                    image=image.data,
+                    mime_type=image.mime_type,
                 )
             )
 
