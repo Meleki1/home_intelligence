@@ -5,7 +5,7 @@ from app.interfaces.api.vision import router as vision_router
 from app.interfaces.api.telegram.webhook import router as telegram_router
 from  app.application import create_app
 
-app = create_app()
+
 
 api_router = APIRouter()
 
@@ -25,7 +25,7 @@ api_router.include_router(
     tags=["Vision"],
 )
 
-app.include_router(
+api_router.include_router(
     telegram_router,
     prefix="/webhooks",
     tags=["Telegram"],
