@@ -5,11 +5,7 @@ from app.database.mixins import TimeStampMixin, UUIDMixin, SoftDeleteMixin
 
 
 
-class HomeState(
-    UUIDMixin, 
-    TimeStampMixin,
-    Base
-):
+class HomeState(UUIDMixin, TimeStampMixin,Base):
 
 
     __tablename__ = "home_state"

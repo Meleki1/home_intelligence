@@ -1,37 +1,125 @@
-from app.domains.understanding.schemas.understanding import (
-    UnderstandingSchema,
-)
+from app.domains.understanding.schemas.understanding import UnderstandingSchema
+from app.domains.understanding.processors.current_hypothesis import CurrentHypothesisProcessor
+from app.domains.understanding.processors.current_knowledge import CurrentKnowledgeProcessor
+from app.domains.understanding.processors.summaries import SummaryProcessor
+from app.domains.conversation.services.state_service import ConversationStateService
+from app.domains.understanding.processors.next_best_step import NextBestStepProcessor
+from app.domains.recommendations.services.recommendation import RecommendationService
+from app.domains.decision.services.decision import DecisionService
+from app.domains.conversation.services.fact_extractor.fact_extractor_service import FactExtractionService
+from app.domains.understanding.schemas.understanding import UnderstandingResult
 
-from app.domains.understanding.processors.current_hypothesis import (
-    CurrentHypothesisProcessor,
-)
-
-from app.domains.understanding.processors.current_knowledge import (
-    CurrentKnowledgeProcessor,
-)
-
-from app.domains.understanding.processors.summaries import (
-    SummaryProcessor,
-)
-
-from app.domains.understanding.processors.unknown_context import (
-    UnknownContextProcessor,
-)
-
-from app.domains.understanding.processors.next_best_step import (
-    NextBestStepProcessor,
-)
-
-from app.domains.recommendations.services.recommendation import (
-    RecommendationService,
-)
-
-from app.domains.decision.services.decision import (
-    DecisionService,
-)
 
 
 class UnderstandingService:
+
+    def __init__(
+        self,
+        conversation_service: ConversationStateService,
+        fact_extractor: FactExtractionService,
+        recommendation_service: RecommendationService,
+        decision_service: DecisionService,
+    ):
+
+        self.conversation_service = conversation_service
+
+        self.fact_extractor = fact_extractor
+
+        self.recommendation_service = recommendation_service
+
+        self.decision_service = decision_service
+    
+    async def understand(self, data: UnderstandingSchema):
+        
+        state = await self.conversation_service.load(
+            data.conversation_id
+        )
+        
+        facts = await self.fact_extractor.extract(
+            data.user_input
+        )
+
+        await self.conversation_service.merge_facts(
+            state,
+            facts,
+        )
+
+        if data.image_analysis:
+
+            await self.conversation_service.merge_image(
+                state,
+                data.image_analysis,
+            )
+
+        missing = (
+            await self.conversation_service.compute_missing(
+                state
+            )
+        )
+
+
+        await self.conversation_service.save(
+            state
+        )
+        
+        current_knowledge = (
+            await CurrentKnowledgeProcessor.process(state)
+        )
+
+        current_hypothesis = (
+            await CurrentHypothesisProcessor.process(state)
+        )
+
+        summary = (
+            await SummaryProcessor.process(state)
+        )
+
+        next_best_step = (
+            await NextBestStepProcessor.process(state)
+        )
+
+        decision = await self.decision_service.decide(
+            missing_information=missing,
+            state=state,
+        )
+
+        recommendations = (
+            await self.recommendation_service.recommend(
+                state=state,
+                decision=decision,
+            )
+        )
+
+        return UnderstandingResult(
+            state=state,
+            missing_information=missing,
+            current_hypothesis=current_hypothesis,
+            current_knowledge=current_knowledge,
+            summary=summary,
+            next_best_step=next_best_step,
+            decision=decision,
+            recommendations=recommendations,
+        )
+    
+
+
+       
+        
+        
+        
+        
+        
+ 
+        
+        
+        
+
+
+
+
+
+
+"""class UnderstandingService:
 
     def __init__(self):
 
@@ -99,26 +187,4 @@ class UnderstandingService:
 
         }
 
-"""class NextAction(Enum):
-
-    CONTINUE_CONVERSATION=(
-        "CONTINUE_CONVERSATION"
-    )
-
-    UPLOAD_IMAGE=(
-        "UPLOAD_IMAGE"
-    )
-
-    MONITOR_ISSUE=(
-        "MONITOR_ISSUE"
-    )
-
-    PROFESSIONAL_ASSISTANCE=(
-
-        "PROFESSIONAL_ASSISTANCE"
-
-    )
-
-    ISSUE_RESOLVED=(
-        "ISSUE_RESOLVED"
-    )"""
+"""

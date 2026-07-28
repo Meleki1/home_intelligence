@@ -1,6 +1,7 @@
 from uuid import UUID
 from pydantic import BaseModel
 from app.domains.vision_analysis.schemas.vision import VisionAnalysisResponse
+from app.domains.conversation.models import ConversationState
 
 class UnderstandingSchema(BaseModel):
 
@@ -10,24 +11,15 @@ class UnderstandingSchema(BaseModel):
     conversation_id: str | None = None
 
 
-from pydantic import BaseModel
 
 class UnderstandingResult(BaseModel):
 
-    user_input: str
+    state: ConversationState
+
+    missing_information: list[str]
 
     current_hypothesis: str
 
-    current_knowledge: str
-
-    unknown_context: str
-
     next_best_step: str
 
-    summary: str
-
-    decision: str
-
     recommendations: list[str]
-
-    image_analysis: VisionAnalysisResponse | None = None
