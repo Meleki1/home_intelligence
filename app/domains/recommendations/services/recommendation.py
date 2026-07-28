@@ -1,29 +1,51 @@
 from app.domains.recommendations.schemas.recommendation import RecommendationSchema
-
+from app.domains.conversation.models import ConversationState
+from app.domains.conversation.services.cognition.schemas import CognitiveResult
+from app.domains.decision.schemas.decision import DecisionSchema
 
 class RecommendationService:
     async def recommend(
         self,
-        user_input: str,
-        image_uploaded: bool = False,
+        state: ConversationState,
+        cognition: CognitiveResult,
+        decision: DecisionSchema,
     ) -> RecommendationSchema:
 
-        if image_uploaded:
+        if decision.action == "ASK_FOLLOW_UP":
+
             return RecommendationSchema(
-                title="Use uploaded image",
+                title="More Information Required",
                 description=(
-                    "We'll use the uploaded "
-                    "image to better understand "
-                    "your situation."
+                    "Additional information is needed "
+                    "before a recommendation can be made."
                 ),
             )
 
-        return RecommendationSchema(
-            title="Provide more information",
-            description=(
-                "Providing additional "
-                "information may help us "
-                "better understand the "
-                "situation."
-            ),
-        )
+        if decision.action == "REQUEST_IMAGE":
+
+            return RecommendationSchema(
+                title="Image Required",
+                description=(
+                    "Please upload a clear photo so the "
+                    "system can identify the issue."
+                ),
+            )
+
+        if decision.action == "PROVIDE_RECOMMENDATION":
+
+            return RecommendationSchema(
+                title="Recommendation Ready",
+                description=(
+                    cognition.summary
+                ),
+            )
+
+        if decision.action == "BOOK_EXPERT":
+
+            return RecommendationSchema(
+                title="Professional Assistance Recommended",
+                description=(
+                    "The issue appears significant enough "
+                    "to recommend booking a pest control expert."
+                ),
+            )

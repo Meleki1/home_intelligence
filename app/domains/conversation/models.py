@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 from uuid import UUID
+from app.domains.conversation.services.cognition.schemas import CognitiveResult
 
 
 class ConversationState(BaseModel):
@@ -24,3 +25,4 @@ class ConversationState(BaseModel):
 
     # Internal tracking
     completed_questions: set[str] = Field(default_factory=set)
+    cognition: CognitiveResult | None = None

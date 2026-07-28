@@ -1,6 +1,5 @@
-from app.domains.decision.schemas.decision import(
-    DecisionSchema
-)
+from app.domains.decision.schemas.decision import DecisionSchema
+
 
 
 class DecisionService:
