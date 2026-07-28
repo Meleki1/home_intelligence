@@ -1,37 +1,27 @@
 from uuid import UUID
-
-from fastapi import UploadFile
-
 from app.domains.AI.services.llm import LLMService
-from app.domains.chat.builders.response_builder import (
-    build_response,
-    resolve_next_best_step,
-    SIMPLE_INTENTS,
-)
-from app.domains.chat.schemas.chat import (
-    ChatRequest,
-    ResponseSchema,
-)
-from app.domains.understanding.schemas.understanding import (
-    UnderstandingSchema,
-)
-from app.domains.understanding.services.understanding import (
-    UnderstandingService,
-)
+from app.domains.chat.builders.response_builder import  build_response, resolve_next_best_step, SIMPLE_INTENTS
+from app.domains.chat.schemas.chat import ChatRequest, ResponseSchema
+from app.domains.understanding.schemas.understanding import UnderstandingSchema
+from app.domains.understanding.services.understanding import UnderstandingService
 from app.domains.vision_analysis.service.vision_analysis import VisionService
 from app.interfaces.api.telegram.schemas import ImageInput
+from app.domains.conversation.services.state_service import ConversationStateService
+from app.domains.conversation.services.fact_extractor.fact_extractor_service import FactExtractionService
+from app.domains.recommendations.services.recommendation import RecommendationService
+from app.domains.decision.services.decision import DecisionService
+from app.domains.conversation.services.cognition.processor import CognitiveProcessor
+from app.core.container import ServiceContainer
 
 class ChatService:
 
     def __init__(self):
 
-        self.llm_service = LLMService()
+        container = ServiceContainer()
 
-        self.understanding_service = (
-            UnderstandingService()
-        )
-
-        self.vision_service = VisionService()
+        self.llm_service = container.llm
+        self.vision_service = container.vision
+        self.understanding_service = container.understanding
 
     async def chat(
         self,
