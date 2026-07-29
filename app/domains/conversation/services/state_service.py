@@ -64,9 +64,9 @@ class ConversationStateService:
 
             state.image_summary = image_analysis.summary
 
-            state.suspected_pest = image_analysis.detected_pest
+            state.suspected_pest = image_analysis.possible_issue
 
-            state.confidence = image_analysis.confidence.level
+            state.confidence = image_analysis.confidence.value
 
             state.completed_questions.add("image")
 

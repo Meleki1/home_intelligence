@@ -17,7 +17,7 @@ class CognitiveProcessor:
 
         context = json.dumps(
             {
-                "state": state.model_dump(),
+                "state": state.model_dump(mode="json"),
                 "missing_information": missing_information,
             },
             indent=2,

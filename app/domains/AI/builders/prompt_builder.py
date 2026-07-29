@@ -1,5 +1,3 @@
-#prompt_builder.py
-
 import json
 
 from app.domains.AI.prompts.system import(
@@ -13,6 +11,8 @@ from app.domains.AI.prompts.understanding import(
 from app.domains.AI.products.pest_control.prompt import(
     PEST_CONTROL_PROMPT
 )
+
+from app.domains.understanding.schemas.understanding import UnderstandingResult
 
 PEST_KEYWORDS=[
 
@@ -35,17 +35,21 @@ PEST_KEYWORDS=[
 ]
 
 
-def build_prompt(understanding: dict):
+def build_prompt(understanding: UnderstandingResult | dict):
+
+    if isinstance(understanding, UnderstandingResult):
+        user_input = understanding.user_input
+        image_analysis = understanding.image_analysis
+    else:
+        user_input = understanding["user_input"]
+        image_analysis = understanding.get("image_analysis")
 
     prompts = [
         SYSTEM_PROMPT,
         UNDERSTANDING_PROMPT,
     ]
 
-    user_input = understanding["user_input"]
     message = user_input.lower()
-
-    image_analysis = understanding.get("image_analysis")
     if image_analysis is not None:
         prompts.append(PEST_CONTROL_PROMPT)
         analysis_payload = (

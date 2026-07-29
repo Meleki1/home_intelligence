@@ -31,5 +31,4 @@ class VisionService:
             if isinstance(level, str):
                 confidence["level"] = level.upper()
 
-        print(json.dumps(data, indent=2))
         return VisionAnalysisResponse.model_validate(data)

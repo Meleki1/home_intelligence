@@ -1,5 +1,3 @@
-from uuid import UUID
-
 from app.domains.conversation.models import ConversationState
 
 
@@ -7,14 +5,11 @@ class ConversationRepository:
 
     def __init__(self):
 
-        self._storage: dict[
-            str,
-            ConversationState,
-        ] = {}
+        self._storage: dict[str, ConversationState] = {}
 
     async def get(
         self,
-        conversation_id: UUID,
+        conversation_id: str,
     ) -> ConversationState | None:
 
         return self._storage.get(
@@ -32,7 +27,7 @@ class ConversationRepository:
 
     async def delete(
         self,
-        conversation_id: UUID,
+        conversation_id: str,
     ) -> None:
 
         self._storage.pop(
@@ -42,7 +37,7 @@ class ConversationRepository:
 
     async def exists(
         self,
-        conversation_id: UUID,
+        conversation_id: str,
     ) -> bool:
 
         return (

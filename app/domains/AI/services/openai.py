@@ -38,7 +38,7 @@ class OpenAIService:
         image_base64 = base64.b64encode(image).decode()
 
         response = await self.client.responses.create(
-            model="gpt-5",
+            model="gpt-4o-mini",
             input=[
                 {
                     "role": "user",
@@ -58,7 +58,7 @@ class OpenAIService:
             ],
         )
 
-        
+        return response.output_text
     async def generate_json(
         self,
         system_prompt: str,
@@ -67,7 +67,7 @@ class OpenAIService:
         **context
     ) -> BaseModel:
 
-        response = await self.client.chat.completions.parse(
+        response = await self.client.beta.chat.completions.parse(
             model="gpt-4o-mini",
             messages=[
                 {
