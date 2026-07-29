@@ -12,7 +12,7 @@ class ConversationStateService:
 
         self.repository = repository
 
-    async def load(self, conversation_id):
+    async def load(self, conversation_id:str):
 
         state = await self.repository.get(conversation_id)
 
