@@ -17,12 +17,8 @@ class FactExtractionService:
         text: str,
     ) -> ExtractedFacts:
 
-        response = await self.openai.generate_json(
-            prompt=FACT_EXTRACTION_PROMPT,
+        return await self.openai.generate_json(
+            system_prompt=FACT_EXTRACTION_PROMPT,
+            user_prompt=text,
             response_model=ExtractedFacts,
-            user_input=text,
-        )
-
-        return ExtractedFacts.model_validate_json(
-            response
         )

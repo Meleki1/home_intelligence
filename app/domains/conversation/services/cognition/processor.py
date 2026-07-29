@@ -1,26 +1,30 @@
 from app.domains.AI.services.openai import OpenAIService
-
 from .schemas import CognitiveResult
-
 from .prompt import COGNITIVE_PROMPT
+import json
 
 
 class CognitiveProcessor:
 
     def __init__(self, openai: OpenAIService):
-
         self.openai = openai
 
-    async def process(self, state, missing_information):
+    async def process(
+        self,
+        state,
+        missing_information,
+    ) -> CognitiveResult:
 
-        response = await self.openai.generate_json(
-
-            prompt=COGNITIVE_PROMPT,
-
-            state=state.model_dump(),
-
-            missing_information=missing_information,
+        context = json.dumps(
+            {
+                "state": state.model_dump(),
+                "missing_information": missing_information,
+            },
+            indent=2,
         )
-        return CognitiveResult.model_validate_json(
-            response
+
+        return await self.openai.generate_json(
+            system_prompt=COGNITIVE_PROMPT,
+            user_prompt=context,
+            response_model=CognitiveResult,
         )
