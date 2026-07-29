@@ -8,7 +8,7 @@ class ConversationRepository:
     def __init__(self):
 
         self._storage: dict[
-            UUID,
+            str,
             ConversationState,
         ] = {}
 

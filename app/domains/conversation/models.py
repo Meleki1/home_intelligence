@@ -4,7 +4,7 @@ from app.domains.conversation.services.cognition.schemas import CognitiveResult
 
 
 class ConversationState(BaseModel):
-    conversation_id: UUID
+    conversation_id: str
 
     # Facts extracted from the user
     affected_area: str | None = None
