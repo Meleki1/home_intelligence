@@ -13,42 +13,34 @@ class ServiceContainer:
 
     def __init__(self):
 
-        self.conversation_repository = (
-            ConversationRepository()
-        )
-
-        self.conversation_service = (
-            ConversationStateService(
-                repository=self.conversation_repository,
-            )
-        )
-
-        self.fact_extractor = (
-            FactExtractionService()
-        )
-
-        self.cognitive_processor = (
-            CognitiveProcessor()
-        )
-
-        self.decision_service = (
-            DecisionService()
-        )
-
-        self.recommendation_service = (
-            RecommendationService()
-        )
-
-        self.understanding_service = (
-            UnderstandingService(
-                conversation_service=self.conversation_service,
-                fact_extractor=self.fact_extractor,
-                recommendation_service=self.recommendation_service,
-                decision_service=self.decision_service,
-                cognitive_processor=self.cognitive_processor,
-            )
-        )
+        self.openai_service = OpenAIService()
 
         self.llm_service = LLMService()
 
         self.vision_service = VisionService()
+
+        self.conversation_repository = ConversationRepository()
+
+        self.conversation_service = ConversationStateService(
+            repository=self.conversation_repository,
+        )
+
+        self.fact_extractor = FactExtractionService(
+            openai=self.openai_service,
+        )
+
+        self.cognitive_processor = CognitiveProcessor(
+            openai=self.openai_service,
+        )
+
+        self.decision_service = DecisionService()
+
+        self.recommendation_service = RecommendationService()
+
+        self.understanding_service = UnderstandingService(
+            conversation_service=self.conversation_service,
+            fact_extractor=self.fact_extractor,
+            recommendation_service=self.recommendation_service,
+            decision_service=self.decision_service,
+            cognitive_processor=self.cognitive_processor,
+        )

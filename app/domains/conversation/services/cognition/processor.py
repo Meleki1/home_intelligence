@@ -7,9 +7,9 @@ from .prompt import COGNITIVE_PROMPT
 
 class CognitiveProcessor:
 
-    def __init__(self):
+    def __init__(self, openai: OpenAIService):
 
-        self.openai = OpenAIService()
+        self.openai = openai
 
     async def process(self, state, missing_information):
 

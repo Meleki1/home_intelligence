@@ -1,9 +1,14 @@
 from app.domains.conversation.services.fact_extractor.prompt import FACT_EXTRACTION_PROMPT
 from app.domains.conversation.services.fact_extractor.schema import ExtractedFacts
+from app.domains.AI.services.openai import OpenAIService
+
 
 class FactExtractionService:
 
-    def __init__(self, openai):
+    def __init__(
+        self,
+        openai: OpenAIService,
+    ):
 
         self.openai = openai
 
