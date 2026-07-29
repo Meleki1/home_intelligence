@@ -7,7 +7,7 @@ from app.domains.recommendations.services.recommendation import RecommendationSe
 from app.domains.decision.services.decision import DecisionService
 from app.domains.conversation.services.cognition.processor import CognitiveProcessor
 from app.domains.conversation.repository import ConversationRepository
-
+from app.domains.AI.services.openai import OpenAIService
 
 class ServiceContainer:
 
