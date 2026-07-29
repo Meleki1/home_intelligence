@@ -19,6 +19,7 @@ class FactExtractionService:
 
         response = await self.openai.generate_json(
             prompt=FACT_EXTRACTION_PROMPT,
+            response_model=ExtractedFacts,
             user_input=text,
         )
 

@@ -4,7 +4,7 @@ from app.config.settings import get_settings
 from app.domains.AI.builders.prompt_builder import build_prompt
 from app.domains.AI.parsers.llm_response_parser import parse_response
 from app.domains.AI.schemas.llm import LLMResponseSchema
-
+from pydantic import BaseModel
 
 
 class OpenAIService:
@@ -58,7 +58,31 @@ class OpenAIService:
             ],
         )
 
-        return response.output_text
+        
+    async def generate_json(
+        self,
+        system_prompt: str,
+        user_prompt: str,
+        response_model: type[BaseModel],
+        **context
+    ) -> BaseModel:
+
+        response = await self.client.chat.completions.parse(
+            model="gpt-4o-mini",
+            messages=[
+                {
+                    "role": "system",
+                    "content": system_prompt,
+                },
+                {
+                    "role": "user",
+                    "content": user_prompt,
+                },
+            ],
+            response_format=response_model,
+        )
+
+        return response.choices[0].message.parsed
             
 
             
