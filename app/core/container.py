@@ -6,28 +6,49 @@ from app.domains.conversation.services.fact_extractor.fact_extractor_service imp
 from app.domains.recommendations.services.recommendation import RecommendationService
 from app.domains.decision.services.decision import DecisionService
 from app.domains.conversation.services.cognition.processor import CognitiveProcessor
+from app.domains.conversation.repository import ConversationRepository
 
 
 class ServiceContainer:
 
     def __init__(self):
 
-        self.llm = LLMService()
-        self.vision = VisionService()
-
-        self.conversation = ConversationStateService()
-        self.fact_extractor = FactExtractionService()
-
-        self.cognitive = CognitiveProcessor()
-
-        self.decision = DecisionService()
-
-        self.recommendation = RecommendationService()
-
-        self.understanding = UnderstandingService(
-            conversation_service=self.conversation,
-            fact_extractor=self.fact_extractor,
-            recommendation_service=self.recommendation,
-            decision_service=self.decision,
-            cognitive_processor=self.cognitive,
+        self.conversation_repository = (
+            ConversationRepository()
         )
+
+        self.conversation_service = (
+            ConversationStateService(
+                repository=self.conversation_repository,
+            )
+        )
+
+        self.fact_extractor = (
+            FactExtractionService()
+        )
+
+        self.cognitive_processor = (
+            CognitiveProcessor()
+        )
+
+        self.decision_service = (
+            DecisionService()
+        )
+
+        self.recommendation_service = (
+            RecommendationService()
+        )
+
+        self.understanding_service = (
+            UnderstandingService(
+                conversation_service=self.conversation_service,
+                fact_extractor=self.fact_extractor,
+                recommendation_service=self.recommendation_service,
+                decision_service=self.decision_service,
+                cognitive_processor=self.cognitive_processor,
+            )
+        )
+
+        self.llm_service = LLMService()
+
+        self.vision_service = VisionService()

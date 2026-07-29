@@ -20,8 +20,8 @@ class ChatService:
         container = ServiceContainer()
 
         self.llm_service = container.llm
-        self.vision_service = container.vision
-        self.understanding_service = container.understanding
+        self.vision_service = container.vision_service
+        self.understanding_service = container.understanding_service
 
     async def chat(
         self,

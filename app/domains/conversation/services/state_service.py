@@ -16,19 +16,17 @@ class ConversationStateService:
 
         state = await self.repository.get(conversation_id)
 
-        if state:
+        if state is None:
 
-            return state
-
-        return ConversationState(
-            conversation_id=conversation_id
-        )
+            state = ConversationState(
+                conversation_id=conversation_id
+            )
 
     async def save(self, state):
 
         await self.repository.save(state)
 
-    async def merge(self, state: ConversationState, facts: ExtractedFacts,):
+    async def merge_facts(self, state: ConversationState, facts: ExtractedFacts):
 
         if facts.affected_area:
 
@@ -42,9 +40,20 @@ class ConversationStateService:
 
             state.completed_questions.add("duration")
 
+        if facts.suspected_pest:
+
+            state.suspected_pest = facts.suspected_pest
+
         if facts.symptoms:
 
-            state.symptoms.extend(facts.symptoms)
+            for symptom in facts.symptoms:
+
+                if symptom not in state.symptoms:
+
+                    state.symptoms.append(
+                        symptom
+                    )
+
 
     async def merge_image(self, state: ConversationState, image_analysis: VisionAnalysisResponse):
        
@@ -60,28 +69,30 @@ class ConversationStateService:
 
             state.completed_questions.add("image")
 
-        return state
 
-async def compute_missing(self, state: ConversationState):
+    async def compute_missing(self, state: ConversationState):
 
-    missing = []
+        missing = []
 
-    if not state.affected_area:
+        if not state.affected_area:
 
-        missing.append(
-            "affected_area"
-        )
+            missing.append(
+                "affected_area"
+            )
 
-    if not state.duration:
+        if not state.duration:
 
-        missing.append(
-            "duration"
-        )
+            missing.append(
+                "duration"
+            )
 
-    if not state.image_received:
+        if not state.image_received:
 
-        missing.append(
-            "image"
-        )
+            missing.append(
+                "image"
+            )
 
-    return missing
+        return missing
+
+    
+
