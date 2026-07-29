@@ -9,4 +9,3 @@ class CognitiveResult(BaseModel):
     next_best_step: str
     reasoning: str
     confidence: str
-    suspected_pest: str | None = None
