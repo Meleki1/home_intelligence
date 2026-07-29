@@ -19,6 +19,7 @@ class ConversationState(BaseModel):
     # Pest
     suspected_pest: str | None = None
     confidence: str | None = None
+    
 
     # Conversation
     summary: str = ""
