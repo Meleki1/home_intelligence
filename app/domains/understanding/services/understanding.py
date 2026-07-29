@@ -30,6 +30,9 @@ class UnderstandingService:
             data.conversation_id
         )
         
+        print(state)
+        print(type(state))
+
         facts = await self.fact_extractor.extract(
             data.user_input
         )

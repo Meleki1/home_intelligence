@@ -21,6 +21,7 @@ class ConversationStateService:
             state = ConversationState(
                 conversation_id=conversation_id
             )
+        return state
 
     async def save(self, state):
 
