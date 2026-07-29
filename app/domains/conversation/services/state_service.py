@@ -29,11 +29,8 @@ class ConversationStateService:
 
     async def merge_facts(self, state: ConversationState, facts: ExtractedFacts):
 
-        if facts.affected_area:
-
-            state.affected_area = facts.affected_area
-
-            state.completed_questions.add("affected_area")
+        if "affected_area" not in state.completed_questions:
+            state.completed_questions.append("affected_area")
 
         if facts.duration:
 

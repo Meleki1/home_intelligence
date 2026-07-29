@@ -25,5 +25,5 @@ class ConversationState(BaseModel):
     summary: str = ""
 
     # Internal tracking
-    completed_questions: set[str] = Field(default_factory=set)
+    completed_questions: list[str] = Field(default_factory=list)
     cognition: CognitiveResult | None = None
