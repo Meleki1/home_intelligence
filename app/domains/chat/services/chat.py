@@ -19,7 +19,7 @@ class ChatService:
 
         container = ServiceContainer()
 
-        self.llm_service = container.llm
+        self.llm_service = container.llm_service
         self.vision_service = container.vision_service
         self.understanding_service = container.understanding_service
 
