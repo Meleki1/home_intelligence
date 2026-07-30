@@ -2,6 +2,9 @@ from app.domains.planning.schemas import (
     Plan,
     PlanAction,
 )
+import logging
+
+logger = llogger = logging.getLogger(__name__)
 
 
 class PlannerService:
@@ -32,6 +35,8 @@ class PlannerService:
                 priority="HIGH",
             )
 
+        logger.info("Plan: %s", Plan.model_dump())
+
         if cognition.confidence == "LOW":
 
             return Plan(
@@ -39,7 +44,9 @@ class PlannerService:
                 recommend_booking=True,
                 priority="HIGH",
             )
-
+        
         return Plan(
             next_action=PlanAction.PROVIDE_GUIDANCE,
         )
+
+        
