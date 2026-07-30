@@ -29,15 +29,15 @@ class ConversationStateService:
 
     async def merge_facts(self, state: ConversationState, facts: ExtractedFacts):
 
-        if "affected_area" not in state.completed_questions:
+
+        if facts.affected_area:
+            state.affected_area = facts.affected_area
             state.completed_questions.add("affected_area")
 
         if facts.duration:
-
             state.duration = facts.duration
-
             state.completed_questions.add("duration")
-
+            
         if facts.suspected_pest:
 
             state.suspected_pest = facts.suspected_pest
@@ -51,7 +51,7 @@ class ConversationStateService:
                     state.symptoms.add(
                         symptom
                     )
-
+    
 
     async def merge_image(self, state: ConversationState, image_analysis: VisionAnalysisResponse):
        
