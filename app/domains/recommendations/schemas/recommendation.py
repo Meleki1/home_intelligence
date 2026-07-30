@@ -1,21 +1,15 @@
 from pydantic import BaseModel
 from typing import Literal 
 
+from pydantic import BaseModel, Field
+
+
 class RecommendationSchema(BaseModel):
 
-    title: str
+    action: str
 
-    description: str
+    follow_up_fields: list[str] = Field(default_factory=list)
 
-    priority: Literal[
-        "LOW",
-        "MEDIUM",
-        "HIGH",
-    ]
+    priority: str
 
-    category: Literal[
-        "FOLLOW_UP",
-        "SELF_HELP",
-        "BOOKING",
-        "SAFETY",
-    ]
+    category: str

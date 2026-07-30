@@ -1,16 +1,7 @@
 from uuid import UUID
-from app.domains.AI.services.llm import LLMService
-from app.domains.chat.builders.response_builder import  build_response, resolve_next_best_step, SIMPLE_INTENTS
 from app.domains.chat.schemas.chat import ChatRequest, ResponseSchema
 from app.domains.understanding.schemas.understanding import UnderstandingSchema
-from app.domains.understanding.services.understanding import UnderstandingService
-from app.domains.vision_analysis.service.vision_analysis import VisionService
 from app.interfaces.api.telegram.schemas import ImageInput
-from app.domains.conversation.services.state_service import ConversationStateService
-from app.domains.conversation.services.fact_extractor.fact_extractor_service import FactExtractionService
-from app.domains.recommendations.services.recommendation import RecommendationService
-from app.domains.decision.services.decision import DecisionService
-from app.domains.conversation.services.cognition.processor import CognitiveProcessor
 from app.core.container import ServiceContainer
 
 class ChatService:
@@ -19,9 +10,13 @@ class ChatService:
 
         container = ServiceContainer()
 
-        self.llm_service = container.llm_service
         self.vision_service = container.vision_service
-        self.understanding_service = container.understanding_service
+        self.understanding_service = (
+            container.understanding_service
+        )
+        self.response_generator = (
+            container.response_generator
+        )
 
     async def chat(
         self,
@@ -40,8 +35,6 @@ class ChatService:
                 )
             )
 
-
-
         understanding = (
             await self.understanding_service.understand(
                 UnderstandingSchema(
@@ -57,27 +50,19 @@ class ChatService:
             )
         )
 
-        llm_response = await self.llm_service.generate(
-            understanding
-        )
-
-        message = build_response(
-            llm_response,
-            understanding,
-        )
-
-        next_best_step = (
-            None
-            if llm_response.intent in SIMPLE_INTENTS
-            else resolve_next_best_step(
-                understanding
+        reply = (
+            await self.response_generator.generate(
+                user_message=request.message,
+                state=understanding.state,
+                cognition=understanding.cognition,
+                plan=understanding.plan
             )
         )
 
         return ResponseSchema(
-            message=message,
-            intent=llm_response.intent,
-            confidence=llm_response.confidence,
-            next_best_step=next_best_step,
+            message=reply,
+            intent=understanding.plan.next_action.value,
+            confidence=understanding.cognition.confidence,
+            next_best_step=understanding.cognition.next_best_step,
             conversation_id=request.conversation_id,
         )

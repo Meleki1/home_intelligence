@@ -3,11 +3,12 @@ from app.domains.understanding.services.understanding import UnderstandingServic
 from app.domains.vision_analysis.service.vision_analysis import VisionService
 from app.domains.conversation.services.state_service import ConversationStateService
 from app.domains.conversation.services.fact_extractor.fact_extractor_service import FactExtractionService
-from app.domains.recommendations.services.recommendation import RecommendationService
-from app.domains.decision.services.decision import DecisionService
 from app.domains.conversation.services.cognition.processor import CognitiveProcessor
 from app.domains.conversation.repository import ConversationRepository
 from app.domains.AI.services.openai import OpenAIService
+from app.domains.conversation.services.response_generator.service import ResponseGenerationService
+from app.domains.planning.planner import PlannerService
+
 
 class ServiceContainer:
 
@@ -18,6 +19,8 @@ class ServiceContainer:
         self.llm_service = LLMService()
 
         self.vision_service = VisionService()
+
+        self.planner = PlannerService()
 
         self.conversation_repository = ConversationRepository()
 
@@ -33,14 +36,15 @@ class ServiceContainer:
             openai=self.openai_service,
         )
 
-        self.decision_service = DecisionService()
+        self.response_generator = ResponseGenerationService(
+            openai=self.openai_service,
+        )
 
-        self.recommendation_service = RecommendationService()
+        
 
         self.understanding_service = UnderstandingService(
             conversation_service=self.conversation_service,
             fact_extractor=self.fact_extractor,
-            recommendation_service=self.recommendation_service,
-            decision_service=self.decision_service,
             cognitive_processor=self.cognitive_processor,
+            planner=self.planner
         )

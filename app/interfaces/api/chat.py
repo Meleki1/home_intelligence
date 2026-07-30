@@ -2,6 +2,9 @@ from fastapi import APIRouter
 from fastapi import HTTPException
 from fastapi import Request
 from fastapi import UploadFile
+from pydantic import ValidationError
+from app.interfaces.api.telegram.schemas import ImageInput
+
 
 from app.domains.chat.schemas.chat import (
     ChatRequest,
@@ -16,7 +19,7 @@ chat_service = ChatService()
 
 
 @router.post(
-    "/chat",
+    "/",
     response_model=ResponseSchema,
     openapi_extra={
         "requestBody": {
@@ -46,9 +49,18 @@ chat_service = ChatService()
 async def chat(request: Request) -> ResponseSchema:
     content_type = request.headers.get("content-type", "")
 
+
     if content_type.startswith("application/json"):
         payload = await request.json()
-        chat_request = ChatRequest.model_validate(payload)
+
+        try:
+            chat_request = ChatRequest.model_validate(payload)
+        except ValidationError as e:
+            raise HTTPException(
+                status_code=422,
+                detail=e.errors(),
+            )
+
         return await chat_service.chat(
             request=chat_request,
             image=None,
@@ -70,6 +82,23 @@ async def chat(request: Request) -> ResponseSchema:
         )
 
         image_field = form.get("image")
+
+        image = None
+
+        if image_field and getattr(image_field, "filename", None):
+            image = ImageInput(
+                data=await image_field.read(),
+                mime_type=image_field.content_type,
+                filename=image_field.filename,
+                source="web",
+            )
+
+        return await chat_service.chat(
+            request=chat_request,
+            image=image,
+        )
+
+        """image_field = form.get("image")
         upload = (
             image_field
             if isinstance(image_field, UploadFile)
@@ -80,7 +109,7 @@ async def chat(request: Request) -> ResponseSchema:
         return await chat_service.chat(
             request=chat_request,
             image=upload,
-        )
+        )"""
 
     raise HTTPException(
         status_code=415,

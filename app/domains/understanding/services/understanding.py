@@ -1,10 +1,17 @@
-from app.domains.understanding.schemas.understanding import UnderstandingSchema
-from app.domains.conversation.services.state_service import ConversationStateService
-from app.domains.recommendations.services.recommendation import RecommendationService
-from app.domains.decision.services.decision import DecisionService
-from app.domains.conversation.services.fact_extractor.fact_extractor_service import FactExtractionService
-from app.domains.understanding.schemas.understanding import UnderstandingResult
-from app.domains.conversation.services.cognition.processor import CognitiveProcessor
+from app.domains.understanding.schemas.understanding import (
+    UnderstandingSchema,
+    UnderstandingResult,
+)
+from app.domains.conversation.services.state_service import (
+    ConversationStateService,
+)
+from app.domains.conversation.services.fact_extractor.fact_extractor_service import (
+    FactExtractionService,
+)
+from app.domains.conversation.services.cognition.processor import (
+    CognitiveProcessor,
+)
+from app.domains.planning.planner import PlannerService
 
 
 class UnderstandingService:
@@ -13,18 +20,18 @@ class UnderstandingService:
         self,
         conversation_service: ConversationStateService,
         fact_extractor: FactExtractionService,
-        recommendation_service: RecommendationService,
-        decision_service: DecisionService,
-        cognitive_processor: CognitiveProcessor
+        cognitive_processor: CognitiveProcessor,
+        planner: PlannerService,
     ):
-
         self.conversation_service = conversation_service
         self.fact_extractor = fact_extractor
-        self.recommendation_service = recommendation_service
-        self.decision_service = decision_service
         self.cognitive_processor = cognitive_processor
+        self.planner = planner
 
-    async def understand(self, data: UnderstandingSchema) -> UnderstandingResult:
+    async def understand(
+        self,
+        data: UnderstandingSchema,
+    ) -> UnderstandingResult:
 
         conversation_id = data.conversation_id or "default"
 
@@ -58,19 +65,13 @@ class UnderstandingService:
 
         state.cognition = cognition
 
+        plan = await self.planner.plan(
+            state=state,
+            cognition=cognition,
+        )
+
         await self.conversation_service.save(
             state
-        )
-
-        decision = await self.decision_service.decide(
-            state,
-            cognition,
-        )
-
-        recommendations = await self.recommendation_service.recommend(
-            state,
-            cognition,
-            decision,
         )
 
         return UnderstandingResult(
@@ -78,6 +79,5 @@ class UnderstandingService:
             image_analysis=data.image_analysis,
             state=state,
             cognition=cognition,
-            decision=decision,
-            recommendations=recommendations,
+            plan=plan,
         )

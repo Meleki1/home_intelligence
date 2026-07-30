@@ -15,8 +15,6 @@ class ResponseSchema(BaseModel):
     conversation_id: str | None = None
 
 
-from pydantic import BaseModel
-
 
 class ChatRequest(BaseModel):
     message: str

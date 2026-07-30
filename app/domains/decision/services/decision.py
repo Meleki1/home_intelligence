@@ -11,36 +11,37 @@ class DecisionService:
         cognition: CognitiveResult,
     ) -> DecisionSchema:
 
-        if not state.image_received:
-            return DecisionSchema(
-                next_action="REQUEST_IMAGE",
-                reason=(
-                    "A clear photo would help identify the issue "
-                    "before making a recommendation."
-                ),
-            )
+        missing = []
 
-        if not state.affected_area or not state.duration:
+        if not state.image_received:
+            missing.append("image")
+
+        if not state.affected_area:
+            missing.append("affected_area")
+
+        if not state.duration:
+            missing.append("duration")
+
+        if missing:
+
+            # If an image is missing, prioritize requesting it.
+            if "image" in missing:
+                return DecisionSchema(
+                    next_action="REQUEST_IMAGE",
+                    missing_information=missing,
+                )
+
             return DecisionSchema(
                 next_action="ASK_FOLLOW_UP",
-                reason=(
-                    "Additional details about the affected area and "
-                    "how long the issue has been present are needed."
-                ),
+                missing_information=missing,
             )
 
         if cognition.confidence == "LOW":
+
             return DecisionSchema(
                 next_action="BOOK_EXPERT",
-                reason=(
-                    "Confidence is low and a professional inspection "
-                    "is recommended."
-                ),
             )
 
         return DecisionSchema(
             next_action="PROVIDE_RECOMMENDATION",
-            reason=(
-                "Enough information is available to provide guidance."
-            ),
         )
