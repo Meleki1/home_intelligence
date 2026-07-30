@@ -3,7 +3,10 @@ from app.domains.conversation.services.fact_extractor.schema import ExtractedFac
 from app.domains.AI.services.openai import OpenAIService
 import logging
 
-logger = logging.getLogger(__name__)
+logger = logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(name)s - %(message)s",
+)
 
 class FactExtractionService:
 
