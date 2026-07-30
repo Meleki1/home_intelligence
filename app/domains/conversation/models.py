@@ -10,7 +10,7 @@ class ConversationState(BaseModel):
     affected_area: str | None = None
     duration: str | None = None
     occupants: str | None = None
-    symptoms: list[str] = Field(default_factory=list)
+    symptoms: set[str] = Field(default_factory=set)
 
     # Vision
     image_received: bool = False

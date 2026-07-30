@@ -30,7 +30,7 @@ class ConversationStateService:
     async def merge_facts(self, state: ConversationState, facts: ExtractedFacts):
 
         if "affected_area" not in state.completed_questions:
-            state.completed_questions.append("affected_area")
+            state.completed_questions.add("affected_area")
 
         if facts.duration:
 
@@ -48,7 +48,7 @@ class ConversationStateService:
 
                 if symptom not in state.symptoms:
 
-                    state.symptoms.append(
+                    state.symptoms.add(
                         symptom
                     )
 
@@ -66,6 +66,9 @@ class ConversationStateService:
             state.confidence = image_analysis.confidence.value
 
             state.completed_questions.add("image")
+
+        print(type(state.completed_questions))
+        print(state.completed_questions)
 
 
     async def compute_missing(self, state: ConversationState):
