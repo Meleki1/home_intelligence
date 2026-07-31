@@ -29,7 +29,10 @@ class PlannerService:
 
                 plan = await self.openai.generate_json(
                     system_prompt=PLANNER_PROMPT,
-                    user_prompt=context,
+                    user_prompt=json.dumps(
+                        context,
+                        indent=2,
+                    ),
                     response_model=Plan,
                 )
 

@@ -20,7 +20,9 @@ class ServiceContainer:
 
         self.vision_service = VisionService()
 
-        self.planner = PlannerService()
+        self.planner = PlannerService(
+            openai=self.openai_service
+        )
 
         self.conversation_repository = ConversationRepository()
 
