@@ -8,6 +8,9 @@ from app.domains.planning.exceptions import PlanningValidationError
 
 
 class PlannerService:
+    def __init__(self, openai: OpenAIService):
+        self.openai = openai
+
 
     async def plan(
         self,
