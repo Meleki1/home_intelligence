@@ -39,7 +39,6 @@ class PlannerService:
                     response_model=Plan,
                 )
 
-                self._validate_plan(plan)
 
                 return plan
 
