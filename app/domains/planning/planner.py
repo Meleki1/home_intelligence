@@ -9,6 +9,8 @@ from app.domains.planning.exceptions import PlanningValidationError
 
 class PlannerService:
     def __init__(self, openai: OpenAIService):
+        print("PlannerService __init__ called")
+        print("OpenAI:", openai)
         self.openai = openai
 
 
