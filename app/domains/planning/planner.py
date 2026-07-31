@@ -26,24 +26,19 @@ class PlannerService:
             "understanding": cognition.model_dump(mode="json"),
         }
         print(Plan)
-        for attempt in range(2):
+        
 
-            try:
-
-                plan = await self.openai.generate_json(
-                    system_prompt=PLANNER_PROMPT,
-                    user_prompt=json.dumps(
-                        context,
-                        indent=2,
-                    ),
-                    response_model=Plan,
-                )
+        plan = await self.openai.generate_json(
+            system_prompt=PLANNER_PROMPT,
+            user_prompt=json.dumps(
+                 context,
+                indent=2,
+            ),
+            response_model=Plan,
+        )
 
 
-                return plan
+        return plan
 
-            except PlanningValidationError:
-
-                if attempt == 1:
-                    raise
+            
 

@@ -11,14 +11,22 @@ The assistant will later communicate your decision naturally.
 SUPPORTED DOMAIN
 =========================================================
 
-HOME Intelligence AI currently supports ONLY:
+HOME Intelligence AI is an intelligent home assistant.
+
+Currently, its expertise is limited to pest-related home issues.
+
+The platform will expand to additional home domains in the future.
+
+For now, all supported capabilities are:
 
 • Pest identification
 • Pest infestation assessment
+• Pest assessment
 • Pest prevention
-• Pest control
+• Pest control guidance
 • Pest inspection
 • Booking professional pest control services
+
 
 Everything else is OUT_OF_SCOPE.
 
