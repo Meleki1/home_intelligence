@@ -2,9 +2,7 @@ from app.domains.conversation.models import ConversationState
 from app.domains.conversation.repository import ConversationRepository
 from app.domains.conversation.services.fact_extractor.schema import ExtractedFacts
 from app.domains.vision_analysis.schemas.vision import VisionAnalysisResponse
-import logging
 
-logger = llogger = logging.getLogger(__name__)
 
 
 
@@ -56,8 +54,7 @@ class ConversationStateService:
                     state.symptoms.add(
                         symptom
                     )
-        logger.info("Conversation state: %s", state.model_dump())
-    
+        
 
     async def merge_image(self, state: ConversationState, image_analysis: VisionAnalysisResponse):
        
@@ -98,8 +95,6 @@ class ConversationStateService:
             missing.append(
                 "image"
             )
-        logger.info("Conversation state: %s", state.model_dump())
-        return missing
-
+        
     
 

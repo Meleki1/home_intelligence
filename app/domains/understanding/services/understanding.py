@@ -42,12 +42,13 @@ class UnderstandingService:
         facts = await self.fact_extractor.extract(
             data.user_input
         )
+        print("Extracted facts:", facts.model_dump())
 
         await self.conversation_service.merge_facts(
             state,
             facts,
         )
-
+        print("State after merge:", state.model_dump())
         if data.image_analysis:
             await self.conversation_service.merge_image(
                 state,
@@ -57,11 +58,14 @@ class UnderstandingService:
         missing = await self.conversation_service.compute_missing(
             state
         )
+        print("Missing:", missing)
 
         cognition = await self.cognitive_processor.process(
             state,
             missing,
         )
+        print("Cognition:", cognition.model_dump())
+
 
         state.cognition = cognition
 
@@ -69,7 +73,7 @@ class UnderstandingService:
             state=state,
             cognition=cognition,
         )
-
+        print("Plan:", plan.model_dump())
         await self.conversation_service.save(
             state
         )
