@@ -8,6 +8,7 @@ class PlanAction(str, Enum):
     PROVIDE_GUIDANCE = "PROVIDE_GUIDANCE"
     RECOMMEND_BOOKING = "RECOMMEND_BOOKING"
     ESCALATE = "ESCALATE"
+    EMERGENCY = "EMERGENCY"
     OUT_OF_SCOPE = "OUT_OF_SCOPE"
 
 class Priority(str, Enum):
