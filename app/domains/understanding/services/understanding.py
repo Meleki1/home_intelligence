@@ -58,7 +58,7 @@ class UnderstandingService:
         missing = await self.conversation_service.compute_missing(
             state
         )
-        print("Missing:", missing)
+        print(missing)
 
         cognition = await self.cognitive_processor.process(
             state,
@@ -73,7 +73,10 @@ class UnderstandingService:
             state=state,
             cognition=cognition,
         )
-        print("Plan:", plan.model_dump())
+        print("\n========== PLAN ==========")
+        print(plan.model_dump())
+        print("==========================\n")
+
         await self.conversation_service.save(
             state
         )

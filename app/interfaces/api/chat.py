@@ -98,18 +98,7 @@ async def chat(request: Request) -> ResponseSchema:
             image=image,
         )
 
-        """image_field = form.get("image")
-        upload = (
-            image_field
-            if isinstance(image_field, UploadFile)
-            and image_field.filename
-            else None
-        )
-
-        return await chat_service.chat(
-            request=chat_request,
-            image=upload,
-        )"""
+       
 
     raise HTTPException(
         status_code=415,

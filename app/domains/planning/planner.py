@@ -1,48 +1,41 @@
-from app.domains.planning.schemas import (
-    Plan,
-    PlanAction,
-)
+import json
+from app.domains.planning.schemas import Plan
+from app.domains.AI.services.openai import OpenAIService
+from app.domains.conversation.services.state_service import ConversationState
+from app.domains.conversation.models import CognitiveResult
+from .prompt import PLANNER_PROMPT
+from app.domains.planning.exceptions import PlanningValidationError
 
 
 class PlannerService:
 
     async def plan(
         self,
-        state,
-        cognition,
+        state: ConversationState,
+        cognition: CognitiveResult,
     ) -> Plan:
 
-        missing = []
+        context = {
+            "conversation_state": state.model_dump(mode="json"),
+            "understanding": cognition.model_dump(mode="json"),
+        }
 
-        if not state.image_received:
-            missing.append("image")
+        for attempt in range(2):
 
-        if not state.affected_area:
-            missing.append("affected_area")
+            try:
 
-        if not state.duration:
-            missing.append("duration")
+                plan = await self.openai.generate_json(
+                    system_prompt=PLANNER_PROMPT,
+                    user_prompt=context,
+                    response_model=Plan,
+                )
 
-        if missing:
+                self._validate_plan(plan)
 
-            return Plan(
-                next_action=PlanAction.ASK_FOLLOW_UP,
-                missing_information=missing,
-                ask_for_image="image" in missing,
-                priority="HIGH",
-            )
+                return plan
 
+            except PlanningValidationError:
 
-        if cognition.confidence == "LOW":
+                if attempt == 1:
+                    raise
 
-            return Plan(
-                next_action=PlanAction.BOOK_EXPERT,
-                recommend_booking=True,
-                priority="HIGH",
-            )
-        
-        return Plan(
-            next_action=PlanAction.PROVIDE_GUIDANCE,
-        )
-
-        
