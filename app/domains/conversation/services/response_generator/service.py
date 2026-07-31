@@ -1,17 +1,8 @@
 from app.domains.AI.services.openai import OpenAIService
 from .prompt import RESPONSE_GENERATION_PROMPT
-from app.domains.planning.schemas import OutOfScopePlan
 from app.domains.conversation.models import ConversationState
 from app.domains.conversation.services.cognition.schemas import CognitiveResult
-from app.domains.planning.schemas import (
-    Plan,
-    FollowUpPlan,
-    GuidancePlan,
-    BookingPlan,
-    EmergencyPlan,
-    OutOfScopePlan,
-)
-
+from app.domains.planning.schemas import PlanAction, Plan
 
 
 
@@ -25,7 +16,8 @@ class ResponseGenerationService:
         user_message: str,
         state: ConversationState,
         cognition: CognitiveResult,
-        plan: Plan,
+        plan: Plan
+    
     ) -> str:
 
         planner_section = self._build_planner_section(plan)
@@ -96,7 +88,7 @@ Priority:
 {plan.priority.value}
 """
 
-        if isinstance(plan, FollowUpPlan):
+        if plan.next_action == PlanAction.ASK_FOLLOW_UP:
 
             section += f"""
 
@@ -107,7 +99,7 @@ Follow-up Questions:
 {chr(10).join(f"- {q}" for q in plan.follow_up_questions)}
 """
 
-        elif isinstance(plan, GuidancePlan):
+        elif plan.next_action == PlanAction.PROVIDE_GUIDANCE:
 
             section += f"""
 
@@ -125,7 +117,7 @@ Safety Warnings:
 {chr(10).join(f"- {w}" for w in plan.safety_warnings)}
 """
 
-        elif isinstance(plan, BookingPlan):
+        elif plan.next_action == PlanAction.RECOMMEND_BOOKING:
 
             section += f"""
 
@@ -136,7 +128,7 @@ Booking Reason:
 {plan.booking_reason}
 """
 
-        elif isinstance(plan, EmergencyPlan):
+        elif plan.next_action == PlanAction.EMERGENCY:
 
             section += f"""
 
@@ -146,7 +138,7 @@ Explanation:
 Safety Warnings:
 {chr(10).join(f"- {w}" for w in plan.safety_warnings)}
 """
-        elif isinstance(plan, OutOfScopePlan):
+        elif plan.next_action == PlanAction.OUT_OF_SCOPE:
 
             section += f"""
 
