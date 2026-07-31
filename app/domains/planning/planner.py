@@ -20,11 +20,12 @@ class PlannerService:
         cognition: CognitiveResult,
     ) -> Plan:
 
+
         context = {
             "conversation_state": state.model_dump(mode="json"),
             "understanding": cognition.model_dump(mode="json"),
         }
-
+        print(Plan)
         for attempt in range(2):
 
             try:
